@@ -11,6 +11,9 @@ import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * @author Raoul D'Cunha
@@ -39,8 +42,24 @@ public class TCPServer {
 				
 				
 				DataOutputStream out = new DataOutputStream( clientConnection.getOutputStream( ) );
-
-				String output = d.readLine();
+				
+				DateFormat df = new SimpleDateFormat("EEE, dd MM yy HH:mm:ss zzz");
+				String formattedDate = df.format(new Date()); 
+				
+				//String output = d.readLine();
+				
+				String output = "HTTP/1.0 200 ok\r\nDate: " + 
+						formattedDate + 
+						"\r\nServer: SE325 Assignment 1 Server (rdcu001)\r\n" + 
+						"Content-type: text/html";
+				
+				output+="\r\n\r\n<html>\r\n" + 
+						"<header><title>Test</title></header>\r\n" + 
+						"<body>\r\n" + 
+						"Hello world\r\n" + 
+						"</body>\r\n" + 
+						"</html>";
+				
 				
 				System.out.println(output);
 			
