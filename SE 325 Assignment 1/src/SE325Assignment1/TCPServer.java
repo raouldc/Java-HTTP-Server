@@ -6,6 +6,9 @@ package SE325Assignment1;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
@@ -53,6 +56,37 @@ public class TCPServer {
 						"\r\nServer: SE325 Assignment 1 Server (rdcu001)\r\n" + 
 						"Content-type: text/html";
 				
+				
+				
+				String path = d.readLine().split(" ")[1];
+				String extension = "";
+
+				int i = path.lastIndexOf('.');
+				if (i > 0) {
+				    extension = path.substring(i+1);
+				}
+				
+				File f = new File(path);
+				try {
+					FileInputStream fs = new FileInputStream(f);
+					int end = 0;
+					while (end != -1)
+					{
+						out.write(fs.read());
+					}
+					
+					
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
+				
+				
+				
+				
+				/**
 				output+="\r\n\r\n<html>\r\n" + 
 						"<header><title>Test</title></header>\r\n" + 
 						"<body>\r\n" + 
@@ -60,7 +94,7 @@ public class TCPServer {
 						"</body>\r\n" + 
 						"</html>";
 				
-				
+				**/
 				System.out.println(output);
 			
 				out.writeBytes(output);
@@ -75,5 +109,6 @@ public class TCPServer {
 			e.printStackTrace( );
 		}
 	}
+	
 
 }
