@@ -3,9 +3,11 @@
  */
 package SE325Assignment1;
 
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -21,6 +23,11 @@ public class TCPServer {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		runserver();
+	}
+	
+	private static void runserver()
+	{
 		try {
 			ServerSocket socket = new ServerSocket( 0 );
 			InetAddress serverHost = InetAddress.getLocalHost( );
@@ -28,17 +35,22 @@ public class TCPServer {
 			/* Repeatedly handle requests for processing. */
 			while( true ) {
 				Socket clientConnection = socket.accept( );
-				DataInputStream in = new DataInputStream( clientConnection.getInputStream( ) );
+				BufferedReader d = new BufferedReader(new InputStreamReader(clientConnection.getInputStream( )));
+				
+				
 				DataOutputStream out = new DataOutputStream( clientConnection.getOutputStream( ) );
-				/* Read numbers to multiply. */
-				int x = in.readInt( );
-				int y = in.readInt( );
-				/* Compute the product and send it back to the client. */
-				int result = x * y;
-				out.writeInt( result );
+
+				String output = d.readLine();
+				
+				System.out.println(output);
+			
+				out.writeBytes(output);
+				
+				
 				/* Close this connection. */
 				clientConnection.close( );
 			}
+			//socket.close();
 		}
 		catch( IOException e ) {
 			e.printStackTrace( );
