@@ -71,31 +71,28 @@ public class TCPServer {
 				if (i > 0) {
 					extension = path.substring(i + 1);
 				}
-				System.out.println(extension);
-
-				if (extension.equals("html")) {
-					DataOutputStream out = new DataOutputStream(
-							clientConnection.getOutputStream());
-
-					String header = generateHeaders(extension);
-
-
-					try {
-						out.writeBytes(header);
-						out.write(readFile(path));
-					} catch (FileNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+				DataOutputStream out = new DataOutputStream(
+						clientConnection.getOutputStream());
+				try {
+					File f = new File(path);
+					if (!f.isFile())
+					{
+						throw new FileNotFoundException();
 					}
-
-					/**
-					 * output+="\r\n\r\n<html>\r\n" +
-					 * "<header><title>Test</title></header>\r\n" + "<body>\r\n"
-					 * + "Hello world\r\n" + "</body>\r\n" + "</html>";
-					 **/
-					System.out.println(header);
-					/* Close this connection. */ 
+					String header = generateHeaders(extension);
+					out.writeBytes(header);
+					out.write(readFile(f));
+				} catch (FileNotFoundException e) {
+					String output = "HTTP/1.0 404 Not Found\r\nDate: "
+							+ getDate()
+							+ "\r\nServer: SE325 Assignment 1 Server (rdcu001)\r\n"
+							+ "Content-type: text/html\r\n\r\n<html>\r\n" +
+							"<header><title>404 Not Found</title></header>\r\n" + "<body>\r\n"
+							+ "<h1>404 Not Found</h1>\r\n" + "</body>\r\n" + "</html>";
+					out.writeBytes(output);
 				}
+				//System.out.println(header);
+				/* Close this connection. */ 
 				clientConnection.close();
 			}
 			// socket.close();
@@ -105,10 +102,10 @@ public class TCPServer {
 	}
 
 
-	private static byte[] readFile(String path) throws IOException
+	private static byte[] readFile(File f) throws IOException
 	{
-		File f = new File(path);
 		FileInputStream fs = new FileInputStream(f);
+		/**THIS MAY CAUSE PROBLEMS WHEN MULTITHREADING THIS SERVER**/
 		byte[] bArray = new byte[fs.available()];
 		fs.read(bArray);
 		fs.close();
@@ -116,25 +113,44 @@ public class TCPServer {
 	}
 
 
-	private static String generateHeaders(String extension)
+	private static String generateHeaders(String extension) throws FileNotFoundException
 	{
 		String contentType = "";
 		switch (extension){
 		case "html":
 			contentType = "text/html";
 			break;
+		case "htm":
+			contentType = "text/html";
+			break;
+		case "css":
+			contentType = "text/css";
+			break;
+		case "jpg":
+			contentType = "image/jpeg";
+			break;
+		case "gif":
+			contentType = "image/gif";
+			break;
+		default:
+			throw new FileNotFoundException("Invalid Content Type");
 		}
-		
+		String header = "HTTP/1.0 200 ok\r\nDate: "
+				+ getDate()
+				+ "\r\nServer: SE325 Assignment 1 Server (rdcu001)\r\n"
+				+ "Content-type: "+contentType+"\r\n\r\n";
+		return header;
+	}
+
+
+	private static String getDate()
+	{
 		//Set Date Format
 		DateFormat df = new SimpleDateFormat(
 				"EEE, dd MM yy HH:mm:ss zzz");
 		//Format Date
 		String formattedDate = df.format(new Date());
-
-		String header = "HTTP/1.0 200 ok\r\nDate: "
-				+ formattedDate
-				+ "\r\nServer: SE325 Assignment 1 Server (rdcu001)\r\n"
-				+ "Content-type: "+contentType+"\r\n\r\n";
-		return header;
+		return formattedDate;
 	}
+
 }
