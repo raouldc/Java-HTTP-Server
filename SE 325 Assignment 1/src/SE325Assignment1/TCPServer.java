@@ -53,7 +53,8 @@ public class TCPServer {
 
 
 				String temp = d.readLine();
-
+				
+				/**----------------------------------DO I NEED THIS????????????????????????--------------------------------------------------------**/
 				if (temp == null)
 				{
 					continue;
@@ -105,7 +106,7 @@ public class TCPServer {
 	private static byte[] readFile(File f) throws IOException
 	{
 		FileInputStream fs = new FileInputStream(f);
-		/**THIS MAY CAUSE PROBLEMS WHEN MULTITHREADING THIS SERVER**/
+		/**---------------------------------------------------THIS MAY CAUSE PROBLEMS WHEN MULTITHREADING THIS SERVER------------------------------------------------**/
 		byte[] bArray = new byte[fs.available()];
 		fs.read(bArray);
 		fs.close();
