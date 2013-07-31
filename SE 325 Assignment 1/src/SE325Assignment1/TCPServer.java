@@ -44,16 +44,16 @@ public class TCPServer {
 			/**System.out.println("Test address: "
 					+ serverHost.getHostAddress() + ":"
 					+ socket.getLocalPort()+ "/index.html");
-					
+
 			/* Repeatedly handle requests for processing. */
 			while (true) {
 				Socket clientConnection = socket.accept();
 				BufferedReader d = new BufferedReader(new InputStreamReader(
 						clientConnection.getInputStream()));
-				
+
 
 				String temp = d.readLine();
-				
+
 				if (temp == null)
 				{
 					continue;
@@ -63,7 +63,7 @@ public class TCPServer {
 				String path = temp.split(" ")[1];
 
 				path = System.getProperty("user.dir") + path;
-				
+
 				//get extension
 				String extension = "";
 
@@ -77,38 +77,12 @@ public class TCPServer {
 					DataOutputStream out = new DataOutputStream(
 							clientConnection.getOutputStream());
 
-					DateFormat df = new SimpleDateFormat(
-							"EEE, dd MM yy HH:mm:ss zzz");
-					String formattedDate = df.format(new Date());
+					String header = generateHeaders(extension);
 
-					// String output = d.readLine();
 
-					String output = "HTTP/1.0 200 ok\r\nDate: "
-							+ formattedDate
-							+ "\r\nServer: SE325 Assignment 1 Server (rdcu001)\r\n"
-							+ "Content-type: text/html\r\n\r\n";
-					//out.writeBytes(output);
-
-					File f = new File(path);
-//			        BufferedReader br = new BufferedReader(new FileReader(f));
-//			        String line = null;
-//			        StringBuilder sb = new StringBuilder();
-//			        while ((line = br.readLine()) != null) {
-//			            sb.append(line);
-//			            sb.append("\n");
-//			        }
-//			        String text = sb.toString();
-//			        text = output + text;
-//					
-//			        out.writeBytes(text);
 					try {
-						FileInputStream fs = new FileInputStream(f);
-						byte[] bArray = new byte[fs.available()];
-						fs.read(bArray);
-						fs.close();
-						out.write(bArray);
-						
-
+						out.writeBytes(header);
+						out.write(readFile(path));
 					} catch (FileNotFoundException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -119,14 +93,10 @@ public class TCPServer {
 					 * "<header><title>Test</title></header>\r\n" + "<body>\r\n"
 					 * + "Hello world\r\n" + "</body>\r\n" + "</html>";
 					 **/
-					System.out.println(output);
-
+					System.out.println(header);
 					/* Close this connection. */ 
-
 				}
-
 				clientConnection.close();
-
 			}
 			// socket.close();
 		} catch (IOException e) {
@@ -134,4 +104,37 @@ public class TCPServer {
 		}
 	}
 
+
+	private static byte[] readFile(String path) throws IOException
+	{
+		File f = new File(path);
+		FileInputStream fs = new FileInputStream(f);
+		byte[] bArray = new byte[fs.available()];
+		fs.read(bArray);
+		fs.close();
+		return bArray;
+	}
+
+
+	private static String generateHeaders(String extension)
+	{
+		String contentType = "";
+		switch (extension){
+		case "html":
+			contentType = "text/html";
+			break;
+		}
+		
+		//Set Date Format
+		DateFormat df = new SimpleDateFormat(
+				"EEE, dd MM yy HH:mm:ss zzz");
+		//Format Date
+		String formattedDate = df.format(new Date());
+
+		String header = "HTTP/1.0 200 ok\r\nDate: "
+				+ formattedDate
+				+ "\r\nServer: SE325 Assignment 1 Server (rdcu001)\r\n"
+				+ "Content-type: "+contentType+"\r\n\r\n";
+		return header;
+	}
 }
