@@ -93,8 +93,6 @@ public class TCPServer {
 					 **/
 					System.out.println(output);
 
-					out.writeBytes(output);
-
 					/* Close this connection. */
 
 				}
