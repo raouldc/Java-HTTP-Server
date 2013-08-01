@@ -12,7 +12,9 @@ public class Program {
 		final int BUFFER_SIZE = 100;
 		
 		// Create shared buffer used to store Integer objects.
-		Buffer<Integer> buffer = new BufferImplWithSemaphore<Integer>(BUFFER_SIZE);
+		//Buffer<Integer> buffer = new BufferImplWithSemaphore<Integer>(BUFFER_SIZE);
+		Buffer<Integer> buffer = new BufferImplWithoutSemaphore<Integer>(BUFFER_SIZE);
+
 		
 		// Create a Set to store all items retrieved by consumer threads.
 		Set<Integer> allItemsConsumed = new HashSet<Integer>();
