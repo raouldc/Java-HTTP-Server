@@ -25,9 +25,6 @@ public class WebServer {
 				Runnable worker = new ServerWorkerThread(socket.accept());
 				executor.execute(worker);
 			}
-			
-			
-			
 		}
 		catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
