@@ -1,4 +1,4 @@
-package se325assignment1;
+package multithreadedHTTPServer;
 
 import java.io.IOException;
 import java.net.InetAddress;

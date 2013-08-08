@@ -1,4 +1,4 @@
-package se325assignment1;
+package multithreadedHTTPServer;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
